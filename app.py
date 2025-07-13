@@ -1,25 +1,27 @@
 from flask import Flask, render_template, request
 from nova_core import run_nova
+import os
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route("/")
 def home():
-    return render_template('index.html')
+    return render_template("index.html")
 
-@app.route('/try', methods=["GET", "POST"])
+@app.route("/try", methods=["GET", "POST"])
 def try_nova():
-    code = ''
-    result = ''
-    error = ''
+    code = ""
+    result = ""
+    error = ""
     if request.method == "POST":
         code = request.form.get("code", "")
         code = code.replace('\r\n', '\n').strip()
-        code = "\n".join([line.strip() for line in code.splitlines() if line.strip() != ""])
+        code = "\n".join([line.strip() for line in code.splitlines() if line.strip()])
         output, err = run_nova("<stdin>", code)
-        result = str(output) if output else ''
-        error = str(err) if err else ''
+        result = str(output) if output else ""
+        error = str(err) if err else ""
     return render_template("try.html", code=code, result=result, error=error)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
