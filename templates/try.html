@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Try NOVA</title>
+  <link rel="stylesheet" href="/static/style1.css">
+</head>
+<body>
+<nav>
+  <a href="/">Documentation</a>
+  <a href="/try">Try NOVA</a>
+</nav>
+
+<div class="container">
+  <h1>Try NOVA</h1>
+  <form method="POST">
+    <textarea name="code" rows="10" placeholder="Write NOVA code here...">{{ code }}</textarea>
+    <br>
+    <button type="submit">Run</button>
+  </form>
+
+  {% if result %}
+  <h2>Output</h2>
+  <pre class="output">{{ result }}</pre>
+  {% endif %}
+
+  {% if error %}
+  <h2>Error</h2>
+  <pre class="error">{{ error }}</pre>
+  {% endif %}
+</div>
+</body>
+</html>

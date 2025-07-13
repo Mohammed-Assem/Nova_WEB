@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NOVA Language</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<main class="container">
+  <section class="hero">
+    <h1>Welcome to the NOVA Language</h1>
+    <p>NOVA is a lightweight, beginner-friendly, interpreted programming language designed to be easy to read, powerful, and extendable. It is built for education, rapid prototyping, and hobbyist development.</p>
+    <a href="/try" class="cta-button">Try It Now →</a>
+  </section>
+
+  <section class="docs">
+    <h2>Features</h2>
+    <ul>
+      <li>Simple syntax inspired by Python and BASIC</li>
+      <li>Variables, numbers, strings, booleans</li>
+      <li>Arithmetic and logical expressions</li>
+      <li>Control structures: <code>IF</code>, <code>WHILE</code>, <code>FOR</code></li>
+      <li>Functions with arguments and return values</li>
+      <li>Built-in error handling and clear error messages</li>
+      <li>Custom syntax highlighting</li>
+      <li>Comment support using <code>#</code></li>
+    </ul>
+
+    <h2>Syntax Guide</h2>
+
+    <h3>1. Variables</h3>
+    <pre><code>NOVA x = 10
+x + 5  # returns 15
+    </code></pre>
+
+    <h3>2. Arithmetic</h3>
+    <pre><code>2 + 3 * 4 - 1 / 2</code></pre>
+
+    <h3>3. Booleans & Logical Operators</h3>
+    <pre><code>TRUE AND FALSE  # FALSE
+NOT TRUE        # FALSE
+5 > 2           # TRUE
+    </code></pre>
+
+    <h3>4. Conditionals</h3>
+    <pre><code>IF x > 10 THEN
+  x + 1
+ELSE
+  x - 1
+    </code></pre>
+
+    <h3>5. Loops</h3>
+    <h4>WHILE Loop</h4>
+    <pre><code>NOVA i = 0
+WHILE i < 5 DO
+  i = i + 1
+    </code></pre>
+
+    <h4>FOR Loop</h4>
+    <pre><code>FOR i = 1 TO 5 DO
+  i * 2
+    </code></pre>
+
+    <h3>6. Functions</h3>
+    <pre><code>FUNC add(a, b) -> RETURN a + b
+
+add(4, 5)  # returns 9
+    </code></pre>
+
+    <h3>7. Comments</h3>
+    <pre><code># This is a comment
+NOVA y = 7
+    </code></pre>
+
+    <h3>8. Errors</h3>
+    <p>If there's an error in your code, NOVA provides syntax or runtime error messages with highlighted locations, like:</p>
+    <pre><code>SyntaxError: Expected identifier after NOVA</code></pre>
+  </section>
+</main>
+
+</body>
+</html>
