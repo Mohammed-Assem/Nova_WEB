@@ -364,7 +364,10 @@ class NovaParser:
             node = self.comp_expr()
             return UnaryOpNode(op, node)
 
-        node = self.bin_op(self.arith_expr, (TT_EE, TT_NE, TT_LT, TT_GT, TT_LTE, TT_GTE))
+        node = self.bin_op(
+            lambda: self.bin_op(self.arith_expr, (TT_EE, TT_NE, TT_LT, TT_GT, TT_LTE, TT_GTE)),
+            ((TT_KEYWORD, 'AND'), (TT_KEYWORD, 'OR'))
+        )
         return node
 
     def arith_expr(self):
@@ -603,6 +606,23 @@ class FunctionVal(NovaValue):
         return result
     def __repr__(self):
         return f"<func {self.name}>"
+    
+class BuiltInFunction(NovaValue):
+    def __init__(self, name, func):
+        super().__init__()
+        self.name = name
+        self.func = func
+
+    def execute(self, args):
+        return self.func(args)
+
+    def __repr__(self):
+        return f"<built-in func {self.name}>"
+    
+def novaout_func(args):
+    output = " ".join(str(arg) for arg in args)
+    print(output)  
+    return StringVal(output)
 
 class SymbolTable:
     def __init__(self, parent=None):
@@ -623,6 +643,9 @@ class Context:
         self.display_name = display_name
         self.parent = parent
         self.symbol_table = SymbolTable(parent.symbol_table if parent else None)
+
+        if parent is None:
+            self.symbol_table.set("novaout", BuiltInFunction("novaout", novaout_func))
 
 class NovaInterpreter:
     def visit_ProgramNode(self, node, ctx):
@@ -715,18 +738,23 @@ class NovaInterpreter:
 
     def visit_WhileNode(self, node, ctx):
         result = None
+        outputs = []
         counter = 0
+
         while self.evaluate(node.condition_node, ctx).is_true():
             if counter > 10000:
                 raise NovaRuntimeError(
-                node.condition_node.op_tok.start if hasattr(node.condition_node, 'op_tok') else None,
-                node.condition_node.op_tok.end if hasattr(node.condition_node, 'op_tok') else None,
-                "WHILE loop exceeded 10,000 iterations",
-                ctx
-            )       
+                    node.condition_node.op_tok.start if hasattr(node.condition_node, 'op_tok') else None,
+                    node.condition_node.op_tok.end if hasattr(node.condition_node, 'op_tok') else None,
+                    "WHILE loop exceeded 10,000 iterations",
+                    ctx
+                )
             result = self.evaluate(node.body_node, ctx)
+            if result is not None:
+                outputs.append(str(result))
             counter += 1
-        return result or BoolVal(False).set_context(ctx)
+
+        return "\n".join(outputs) if outputs else None
 
     def visit_ForNode(self, node, ctx):
         start = self.evaluate(node.start_node, ctx).value
@@ -734,21 +762,18 @@ class NovaInterpreter:
         step = self.evaluate(node.step_node, ctx).value if node.step_node else 1
 
         i = start
-        ctx.symbol_table.set(node.var_name_tok.value, NumberVal(i))
-        result = None
+        results = []
 
-        if step >= 0:
-            while i <= end:
-                ctx.symbol_table.set(node.var_name_tok.value, NumberVal(i))
-                result = self.evaluate(node.body_node, ctx)
-                i += step
-        else:
-            while i >= end:
-                ctx.symbol_table.set(node.var_name_tok.value, NumberVal(i))
-                result = self.evaluate(node.body_node, ctx)
-                i += step
+        while (i <= end and step >= 0) or (i >= end and step < 0):
+            ctx.symbol_table.set(node.var_name_tok.value, NumberVal(i))
+            value = self.evaluate(node.body_node, ctx)
 
-        return result or BoolVal(False).set_context(ctx)
+            if not isinstance(node.body_node, VarAssignNode):
+                results.append(str(value))
+
+            i += step
+
+        return "\n".join(results) if results else None
 
     def visit_FuncDefNode(self, node, ctx):
         func_name = node.name_tok.value if node.name_tok else None
@@ -770,8 +795,7 @@ class NovaInterpreter:
     def visit_CallNode(self, node, ctx):
         func = self.evaluate(node.node_to_call, ctx)
         args = [self.evaluate(arg, ctx) for arg in node.arg_nodes]
-
-        if not isinstance(func, FunctionVal):
+        if not isinstance(func, (FunctionVal, BuiltInFunction)):
             raise NovaRuntimeError(None, None, "Tried to call a non-function", ctx)
 
         return func.execute(args)
