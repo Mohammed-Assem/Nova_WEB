@@ -29,7 +29,7 @@
     <h2>Syntax Guide</h2>
 
     <h3>1. Variables</h3>
-    <pre><code>NOVA x = 10
+    <pre><code>Nova x = 10
 x + 5  # returns 15
     </code></pre>
 
@@ -51,7 +51,7 @@ ELSE
 
     <h3>5. Loops</h3>
     <h4>WHILE Loop</h4>
-    <pre><code>NOVA i = 0
+    <pre><code>Nova i = 0
 WHILE i < 5 DO
   i = i + 1
     </code></pre>
@@ -69,10 +69,18 @@ add(4, 5)  # returns 9
 
     <h3>7. Comments</h3>
     <pre><code># This is a comment
-NOVA y = 7
+Nova y = 7
     </code></pre>
 
-    <h3>8. Errors</h3>
+    <h3>8. Output</h3>
+<p>You can print values using the built-in <code>novaout()</code> function:</p>
+<pre><code>novaout("Hello, NOVA!")
+novaout(5 + 3)</code></pre>
+<p>This will print:</p>
+<pre><code>Hello, NOVA!
+8</code></pre>
+
+    <h3>9. Errors</h3>
     <p>If there's an error in your code, NOVA provides syntax or runtime error messages with highlighted locations, like:</p>
     <pre><code>SyntaxError: Expected identifier after NOVA</code></pre>
   </section>
