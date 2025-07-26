@@ -17,7 +17,7 @@ def try_nova():
         code = code.replace('\r\n', '\n').strip()
         code = "\n".join([line.strip() for line in code.splitlines() if line.strip() != ""])
         output, err = run_nova("<stdin>", code)
-        result = str(output) if output else ''
+        result = str(output) if output is not None else ''
         error = str(err) if err else ''
     return render_template("try.html", code=code, result=result, error=error)
 
